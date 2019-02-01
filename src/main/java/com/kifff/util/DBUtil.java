@@ -1,23 +1,29 @@
 package com.kifff.util;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class DBUtil {
 
-    private static final String DB_DRIVER_CLASS = "com.mysql.jdbc.Driver";
-    private static final String DB_USERNAME = "root";
-    private static final String DB_PASSWORD = "";
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/tutorialdb";
+    private static final String DB_DRIVER_CLASS = "driver.class.name";
+    private static final String DB_USERNAME = "db.user";
+    private static final String DB_PASSWORD = "db.password";
+    private static final String DB_URL = "db.url";
     private static Connection connection = null;
-
+    private static Properties properties = null;
     static{
         try {
-            Class.forName(DB_DRIVER_CLASS);
-            connection = DriverManager.getConnection(DB_URL,DB_USERNAME,DB_PASSWORD);
+             properties = new Properties();
+             properties.load(new FileInputStream("src/database.properties"));
+            Class.forName(properties.getProperty(DB_DRIVER_CLASS));
+            connection = DriverManager.getConnection(properties.getProperty(DB_URL),properties.getProperty(DB_USERNAME),properties.getProperty(DB_PASSWORD));
 
-        } catch (ClassNotFoundException | SQLException e){
+        } catch (ClassNotFoundException | SQLException | IOException e){
             e.printStackTrace();
         }
     }
