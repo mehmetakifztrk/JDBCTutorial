@@ -2,7 +2,9 @@ package com.kifff.client;
 
 import com.kifff.util.DBUtil;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.Statement;
 
 /**
@@ -12,33 +14,23 @@ import java.sql.Statement;
 public class ClientTest
 {
     public static void main( String[] args ) {
-       //createEmployee();
-        updateEmployeeEmailById();
+        getEmployeeById();
     }
 
-    private static void updateEmployeeEmailById() {
+    private static void getEmployeeById() {
         try(Connection connection = DBUtil.getConnection();Statement st = connection.createStatement();){
-            String SQLUPDATE = "UPDATE employee_table  SET email='mehmetakifztrk44@gmail.com' WHERE employee_id=1";
-            int executeUpdate = st.executeUpdate(SQLUPDATE); // sorgu çalisirsa 1 calismassa 0
-            if (executeUpdate == 1){
-                System.out.println("basarili");
-            }else{
-                System.out.println("basarisiz");
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
+            String SQL = "SELECT * FROM employee_table WHERE employee_id=1";
+            ResultSet rs = st.executeQuery(SQL);
+            if (rs.next()){
+                int empId = rs.getInt("employee_id");
+                String eName = rs.getString("employee_name");
+                String email = rs.getString("email");
+                Double salary = rs.getDouble("salary");
+                BigDecimal bonus = rs.getBigDecimal("bonus");
 
-    private static void createEmployee() {
-        try(Connection connection = DBUtil.getConnection();Statement st = connection.createStatement();){
-            String SQLINSTERT = "INSERT INTO employee_table (employee_name,email,salary,date_of_joining,bonus) " +
-                    "VALUES ('Mehmet Akif Öztürk','mehmetakifztrk@outlook.com',60000.00,'2019-05-17',400.00)";
-            int executeUpdate = st.executeUpdate(SQLINSTERT); // sorgu çalisirsa 1 calismassa 0
-            if (executeUpdate == 1){
-                System.out.println("basarili");
+                System.out.println(empId+"/n"+eName+"/n"+email+"/n"+salary+"/n"+bonus);
             }else{
-                System.out.println("basarisiz");
+                System.out.println("bu id de kayıt yok");
             }
         }catch (Exception e){
             e.printStackTrace();
